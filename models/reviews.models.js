@@ -1,6 +1,12 @@
 const db = require("../db")
 
-exports.fetchReviews = async ()=>{
-    return await db.query('SELECT * FROM reviews')
-
+exports.fetchReviews = async (id=false) => {
+    if (!id){
+        return await db.query('SELECT * FROM reviews')
+    }else{
+        return await db.query('SELECT * FROM reviews WHERE review_id = $1',[id])
+    }
+}
+exports.updateReview = async (id) => {
+    
 }
