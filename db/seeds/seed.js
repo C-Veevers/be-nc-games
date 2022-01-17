@@ -2,10 +2,11 @@ const db = require('../');
 const format = require('pg-format');
 
 const seed = (data) => {
-  const { categoryData, commentData, reviewData, userData } = data; let tables = ['categories', 'users', 'reviews', 'comments']
-  let drop = `DROP TABLE IF EXISTS`
-  let create = `CREATE TABLE`
-  let insert = `INSERT INTO`
+  const { categoryData, commentData, reviewData, userData } = data; 
+  const tables = ['categories', 'users', 'reviews', 'comments']
+  const drop = `DROP TABLE IF EXISTS`
+  const create = `CREATE TABLE`
+  const insert = `INSERT INTO`
   //dropping tables in reverse order:
   return db.query(`${drop} ${tables[3]};`)
     .then(() => {
@@ -15,7 +16,6 @@ const seed = (data) => {
     }).then(() => {
       return db.query(`${drop} ${tables[0]};`)
     }).then(() => {
-      console.log('tables dropped')
       //creating tables:
       return db.query(`${create} ${tables[0]}(
         slug VARCHAR PRIMARY KEY NOT NULL,
@@ -53,46 +53,44 @@ const seed = (data) => {
       );
     `)
     }).then(() => {
-      console.log('tables created')
-      let catArray = categoryData.map(cat => {
+      const catArray = categoryData.map(cat => {
         return [cat.slug, cat.description]
       })
-      let catItems = format(`${insert} ${tables[0]}
+      const catItems = format(`${insert} ${tables[0]}
     (slug, description)
     VALUES %L
     RETURNING *;`, catArray)
       return db.query(catItems)
     }).then(() => {
-      let userArray = userData.map(user => {
+      const userArray = userData.map(user => {
         return [user.username, user.name, user.avatar_url]
       })
-      let userItems = format(`${insert} ${tables[1]}
+      const userItems = format(`${insert} ${tables[1]}
       (username, name, avatar_url )
       VALUES %L
       RETURNING *;`, userArray)
       return db.query(userItems)
     }).then(() => {
-      let reviewArray = reviewData.map((rev, index) => {
+      const reviewArray = reviewData.map((rev, index) => {
         return [rev.title, rev.designer, rev.owner, rev.review_img_url,
         rev.review_body, rev.category, rev.created_at, rev.votes]
       })
-      let reviewItems = format(`${insert} ${tables[2]}
+      const reviewItems = format(`${insert} ${tables[2]}
       (title, designer, owner, review_img_url, review_body, category, created_at, votes)
       VALUES %L
       RETURNING *;`, reviewArray)
       return db.query(reviewItems)
     }).then(() => {
-      let comArray = commentData.map((com, index) => {
+      const comArray = commentData.map((com, index) => {
         return [com.body, com.votes, com.author, com.review_id, com.created_at]
       })
-      let comItems = format(`${insert} ${tables[3]}
+      const comItems = format(`${insert} ${tables[3]}
       (body, votes, author, review_id, created_at)
       VALUES %L
       RETURNING *;
       `, comArray)
       return db.query(comItems)
     }).then(() => {
-      console.log('data inserted into tables')
     })
 };
 

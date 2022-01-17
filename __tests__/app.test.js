@@ -29,4 +29,32 @@ describe('/API', () => {
         });
     });
 });
+
+describe('API/REVIEWS', () => {
+    describe('Get Reviews', () => {
+        const keys = [
+            'review_id', 'title', 'review_body',
+            'designer','review_img_url', 'votes', 
+            'category', 'owner', 'created_at'
+        ]
+        test('status 200:  returns an object', () => {
+            return request(app)
+            .get('/api/reviews')
+            .expect(200)
+            .then(res => {
+                expect(typeof res.body.msg).toBe("object")
+            })
+        });
+        test('status 200: returned items have all keys', () => {
+            return request(app)
+            .get('/api/reviews')
+            .expect(200)
+            .then(res => {
+                res.body.msg.forEach(result =>{
+                    expect(Object.keys(result)).toEqual(keys)
+                })
+            })
+        });
+    });
+});
     

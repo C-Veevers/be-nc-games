@@ -1,13 +1,12 @@
 const express = require('express');
 const app = express()
 app.use(express.json())
-//controllers:
-const {welcomeMessage} = require('./controllers/welcome.controller')
 
-app.get('/api', welcomeMessage)
+//routers
+const apiRouter = require('./routers/api.router');
+app.use("/api", apiRouter)
 
-//error handling:
-
+//error handling
 app.all("*", (req, res) => {
     res.status(404).send({ msg: "Invalid URL" });
 });
