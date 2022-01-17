@@ -2,8 +2,9 @@ const express = require('express');
 const app = express()
 app.use(express.json())
 //controllers:
+const {welcomeMessage} = require('./controllers/welcome.controller')
 
-
+app.get('/api', welcomeMessage)
 
 //error handling:
 
@@ -21,3 +22,5 @@ app.use((err, req, res, next) => {
     console.log(err);
     res.status(500).send({ msg: "Internal server error" });
 });
+
+module.exports = app;
