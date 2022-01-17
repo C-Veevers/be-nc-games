@@ -1,6 +1,5 @@
 const db = require('../');
 const format = require('pg-format');
-const { at } = require('../data/development-data/categories');
 
 const seed = (data) => {
   const { categoryData, commentData, reviewData, userData } = data; let tables = ['categories', 'users', 'reviews', 'comments']
