@@ -112,12 +112,12 @@ describe('API/REVIEWS', () => {
                 expect(res.body.review[0].review_id).toBe(3)
             })
         });
-        test.only('status 404: returns "Review Not Found" when id is not found in table', () => {
+        test('status 404: returns "Review Not Found" when id is not found in table', () => {
             return request(app)
             .get('/api/reviews/14')
             .expect(404)
             .then(res => {
-                expect(res.body.msg).toBe("Review Not Found")
+                expect(res.body.msg).toBe("Not Found")
             })
         });
         test('status 400: returns "Bad Request" when id is not valid', () => {
@@ -129,18 +129,55 @@ describe('API/REVIEWS', () => {
             })
         });
     });
-/*     describe('Patch review by ID', () => {
-        const update = {
-
-        }
+    describe.only('Patch review by ID', () => {
         test('status 200: returns an object', () => {
+            const update = {
+                inc_votes: 0
+            }
             return request(app)
             .patch('/api/reviews/3')
+            .send(update)
             .expect(200)
             .then(res => {
-                expect(typeof res.body.review).toBe("object")
+                expect(typeof res.body.review).toEqual("object")
             })
         });
-    }); */
+        test('status 200: inc votes of 3 by 0 - votes = 5', () => {
+            const update = {
+                inc_votes: 0
+            }
+            return request(app)
+            .patch('/api/reviews/3')
+            .send(update)
+            .expect(200)
+            .then(res => {
+                expect(res.body.review.votes).toBe(5)
+            })
+        });
+        test('status 200: inc votes of 3 by 1 - votes = 6', () => {
+            const update = {
+                inc_votes: 1
+            }
+            return request(app)
+            .patch('/api/reviews/3')
+            .send(update)
+            .expect(200)
+            .then(res => {
+                expect(res.body.review.votes).toBe(6)
+            })
+        });
+        test('status 200: inc votes of 3 by -1 - votes = 4', () => {
+            const update = {
+                inc_votes: -1
+            }
+            return request(app)
+            .patch('/api/reviews/3')
+            .send(update)
+            .expect(200)
+            .then(res => {
+                expect(res.body.review.votes).toBe(4)
+            })
+        });
+    });
 });
     

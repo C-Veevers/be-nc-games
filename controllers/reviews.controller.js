@@ -22,9 +22,11 @@ exports.getReviewById = (req, res, next)=>{
 }
 exports.patchReview = (req, res, next)=>{
     const {revId} = req.params
-    updateReview(revId, req.body).then(updatedResult => {
+    const {inc_votes} = req.body
+    updateReview(revId, inc_votes).then(updatedResult => {
+        console.log('updatedResult ==> ',updatedResult.rows)
         res.status(200)
-        res.send({review: updatedResult.rows})
+        res.send({review: updatedResult.rows[0]})
     })
     .catch(err=> next(err))
 }
