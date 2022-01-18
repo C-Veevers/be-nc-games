@@ -3,7 +3,7 @@ const { fetchReviews, updateReview} = require("../models/reviews.models")
 exports.getReviews = (req, res, next)=>{
     fetchReviews().then((reviewTable)=>{
         res.status(200)
-        res.send({msg: reviewTable.rows})
+        res.send({reviews: reviewTable.rows})
     })
     .catch(err => next(err))
 }
@@ -12,10 +12,10 @@ exports.getReviewById = (req, res, next)=>{
     fetchReviews(revId).then(review =>{
         if (review.rowCount == 0){
             res.status(404)
-            res.send({msg: "Review Not Found"})
+            res.send({msg: "Not Found"})
         }else{
             res.status(200)
-            res.send({msg: review.rows})
+            res.send({review: review.rows})
         }
     })
     .catch(err=> next(err))
@@ -24,7 +24,7 @@ exports.patchReview = (req, res, next)=>{
     const {revId} = req.params
     updateReview(revId, req.body).then(updatedResult => {
         res.status(200)
-        res.send({msg: updatedResult.rows})
+        res.send({review: updatedResult.rows})
     })
     .catch(err=> next(err))
 }

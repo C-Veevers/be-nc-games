@@ -4,7 +4,9 @@ app.use(express.json())
 
 //routers
 const apiRouter = require('./routers/api.router');
+
 app.use("/api", apiRouter)
+
 
 //error handling
 app.all("*", (req, res) => {

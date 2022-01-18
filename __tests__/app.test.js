@@ -29,20 +29,51 @@ describe('/API', () => {
         });
     });
 });
-
+describe('API/CATEGORIES', () => {
+    describe('Get Categories', () => {
+        test('Status 200: Returns object', () => {
+            return request(app)
+            .get('/api/categories')
+            .expect(200)
+            .then(res => {
+                expect(typeof res.body.categories).toBe("object")
+            })
+        });
+        test('Status 200: Returned Items have required keys', () => {
+            const keys = ['slug', 'description']
+            return request(app)
+            .get('/api/categories')
+            .expect(200)
+            .then(res => {
+                res.body.categories.forEach(result =>{
+                    expect(Object.keys(result)).toEqual(keys)
+                })
+            })
+        });
+        test('status 200: returned all categories', () => {
+            return request(app)
+            .get('/api/categories')
+            .expect(200)
+            .then(res => {
+                expect(res.body.categories.length).toBe(4);
+            })
+        });
+    });
+});
 describe('API/REVIEWS', () => {
     describe('Get Reviews', () => {
         const keys = [
-            'review_id', 'title', 'review_body',
-            'designer','review_img_url', 'votes', 
-            'category', 'owner', 'created_at'
+            'owner',
+            'title', 'review_id', 'review_body',
+            'designer','review_img_url','category', 
+            'created_at','votes'
         ]
         test('status 200: returns an object', () => {
             return request(app)
             .get('/api/reviews')
             .expect(200)
             .then(res => {
-                expect(typeof res.body.msg).toBe("object")
+                expect(typeof res.body.reviews).toBe("object")
             })
         });
         test('status 200: returned items have all keys', () => {
@@ -50,7 +81,7 @@ describe('API/REVIEWS', () => {
             .get('/api/reviews')
             .expect(200)
             .then(res => {
-                res.body.msg.forEach(result =>{
+                res.body.reviews.forEach(result =>{
                     expect(Object.keys(result)).toEqual(keys)
                 })
             })
@@ -60,7 +91,7 @@ describe('API/REVIEWS', () => {
             .get('/api/reviews')
             .expect(200)
             .then(res => {
-                expect(res.body.msg.length).toBe(13);
+                expect(res.body.reviews.length).toBe(13);
             })
         });
     });
@@ -70,7 +101,7 @@ describe('API/REVIEWS', () => {
             .get('/api/reviews/3')
             .expect(200)
             .then(res => {
-                expect(typeof res.body.msg).toBe("object")
+                expect(typeof res.body.review).toBe("object")
             })
         });
         test('status 200: returns object with correct ID', () => {
@@ -78,16 +109,14 @@ describe('API/REVIEWS', () => {
             .get('/api/reviews/3')
             .expect(200)
             .then(res => {
-                console.log(res.body)
-                expect(res.body.msg[0].review_id).toBe(3)
+                expect(res.body.review[0].review_id).toBe(3)
             })
         });
-        test('status 404: returns "Review Not Found" when id is not found in table', () => {
+        test.only('status 404: returns "Review Not Found" when id is not found in table', () => {
             return request(app)
             .get('/api/reviews/14')
             .expect(404)
             .then(res => {
-                console.log(res.body)
                 expect(res.body.msg).toBe("Review Not Found")
             })
         });
@@ -96,10 +125,22 @@ describe('API/REVIEWS', () => {
             .get('/api/reviews/a')
             .expect(400)
             .then(res => {
-                console.log(res.body)
                 expect(res.body.msg).toBe("Bad Request")
             })
         });
     });
+/*     describe('Patch review by ID', () => {
+        const update = {
+
+        }
+        test('status 200: returns an object', () => {
+            return request(app)
+            .patch('/api/reviews/3')
+            .expect(200)
+            .then(res => {
+                expect(typeof res.body.review).toBe("object")
+            })
+        });
+    }); */
 });
     
