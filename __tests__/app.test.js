@@ -202,5 +202,89 @@ describe('API/REVIEWS', () => {
                     expect(res.body.review.votes).toBe(4)
                 })
         });
+        test.skip('status 200: inc votes of 3 by -1 - votes = 4', () => {
+            const update = {
+                inc_mice: -1
+            }
+            return request(app)
+                .patch('/api/reviews/3')
+                .send(update)
+                .expect(200)
+                .then(res => {
+                    console.log(res.body)
+                    expect(res.body.review.votes).toBe(4)
+                })
+        });
+    });
+    describe('Get Comments By Review ID', () => {
+        test('status 200: should return an object', () => {
+            return request(app)
+                .get('/api/reviews/3/comments')
+                .expect(200)
+                .then(res => {
+                    expect(typeof res.body.comments).toBe("object");
+                })
+        });
+        test('status 200: object should have required keys', () => {
+            const keys = ['comment_id', 'votes', 'created_at', 'author', 'body']
+            return request(app)
+                .get('/api/reviews/3/comments')
+                .expect(200)
+                .then(res => {
+                    res.body.comments.forEach(result => {
+                        expect(Object.keys(result)).toEqual(keys)
+                    })
+                })
+        });
+        test('status 404: Returns Not Found for id with no comments', () => {
+            const keys = ['comment_id', 'votes', 'created_at', 'author', 'body']
+            return request(app)
+                .get('/api/reviews/4/comments')
+                .expect(404)
+                .then(res => {
+                    expect(res.body.msg).toBe('Not Found')
+                })
+        });
+    });
+    describe.only('Post Comments By Review Id', () => {
+        test('status 200: should return an object', () => {
+            let updated = {
+                username: "bainesface",
+                body: "Something about things again"
+            }
+            return request(app)
+                .post('/api/reviews/3/comments')
+                .send(updated)
+                .expect(200)
+                .then(res => {
+                    expect(typeof res.body.comment).toBe("object");
+                })
+        });
+        test('status 200: should return the posted comment', () => {
+            let updated = {
+                username: "bainesface",
+                body: "Something about things again"
+            }
+            return request(app)
+                .post('/api/reviews/3/comments')
+                .send(updated)
+                .expect(200)
+                .then(res => {
+                    expect(res.body.comment[0].body).toBe("Something about things again");
+                })
+        });
+        test('status 400: should return "Bad Request" for invalid user id', () => {
+            let updated = {
+                username: "bainesface2",
+                body: "Something about things"
+            }
+            return request(app)
+                .post('/api/reviews/3/comments')
+                .send(updated)
+                .expect(400)
+                .then(res => {
+                    expect(res.body.msg).toBe("Bad Request");
+                })
+        });
     });
 });
