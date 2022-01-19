@@ -202,7 +202,7 @@ describe('API/REVIEWS', () => {
                     expect(res.body.review.votes).toBe(4)
                 })
         });
-        test.skip('status 200: inc votes of 3 by -1 - votes = 4', () => {
+        test.skip('error handling - needs work', () => {
             const update = {
                 inc_mice: -1
             }
@@ -246,7 +246,7 @@ describe('API/REVIEWS', () => {
                 })
         });
     });
-    describe.only('Post Comments By Review Id', () => {
+    describe('Post Comments By Review Id', () => {
         test('status 200: should return an object', () => {
             let updated = {
                 username: "bainesface",
@@ -286,5 +286,42 @@ describe('API/REVIEWS', () => {
                     expect(res.body.msg).toBe("Bad Request");
                 })
         });
+    });
+});
+describe('API/COMMENTS', () => {
+    describe('Delete Comment', () => {
+        test('status 200: should return an object', () => {
+            return request(app)
+                .delete('/api/comments/3')
+                .expect(200)
+                .then(res => {
+                    expect(typeof res.body.comment).toBe("object");
+                })
+        })
+        test('status 200: object should be the requested deleted comment', () => {
+            return request(app)
+                .delete('/api/comments/3')
+                .expect(200)
+                .then(res => {
+                    expect(res.body.comment[0]).toEqual({
+                        "author": "philippaclaire9",
+                        "body": "I didn't know dogs could play games",
+                        "comment_id": 3,
+                        "created_at": "2021-01-18T10:09:48.110Z",
+                        "review_id": 3,
+                        "votes": 10
+                    });
+                })
+        })
+        test('status 200 & 204: object should not exist in the db once deleted', () => {
+            return request(app)
+                .delete('/api/comments/3')
+                .expect(200)
+                .then(res => {
+                    return request(app)
+                        .get('/api/comments/3')
+                        .expect(204)
+                })
+        })
     });
 });

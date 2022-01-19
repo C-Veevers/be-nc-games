@@ -16,3 +16,16 @@ exports.updateCommentsForRevId = async (id, username, body) => {
       RETURNING *;
    `, [id, username, body])
 }
+exports.removeCommentForComID = async (id) => {
+   return await db.query(`
+   DELETE FROM comments
+   WHERE comment_id = $1
+   RETURNING *;
+   `, [id])
+}
+exports.fetchCommentWithID = async (id) => {
+   return await db.query(`
+   SELECT * FROM comments
+   WHERE comment_id = $1
+   `, [id])
+}

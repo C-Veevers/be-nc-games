@@ -1,4 +1,4 @@
-const { fetchCommentsForRevId, updateCommentsForRevId } = require("../models/comments.models")
+const { fetchCommentsForRevId, updateCommentsForRevId, removeCommentForComID, fetchCommentWithID } = require("../models/comments.models")
 
 exports.getCommentsByRevId = (req, res, next) => {
    const { revId } = req.params
@@ -17,5 +17,23 @@ exports.postCommentByRevId = (req, res, next) => {
    updateCommentsForRevId(revId, username, body).then(comment => {
       res.status(200)
       res.send({ comment: comment.rows })
+   }).catch(err => next(err))
+}
+exports.deleteCommentById = (req, res, next) => {
+   const { comId } = req.params
+   removeCommentForComID(comId).then(comment => {
+      res.status(200)
+      res.send({ comment: comment.rows })
+   }).catch(err => next(err))
+}
+exports.getCommentById = (req, res, next) => {
+   const { comId } = req.params
+   fetchCommentWithID(comId).then(comment => {
+      if (comment.rowCount == 0) {
+         return Promise.reject({ status: 204 })
+      } else {
+         res.status(200)
+         res.send({ comment: comment.rows })
+      }
    }).catch(err => next(err))
 }
