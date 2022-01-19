@@ -1,13 +1,40 @@
-const db = require("../db")
+const db = require('../db')
 
-exports.hasReview = async (id) =>{
-    let check =  await db.query(`SELECT * FROM reviews WHERE review_id = $1`,[id])
-    return (check.rows.length) ? true : false
+exports.hasReview = async (id) => {
+    let check = await db.query(`SELECT * FROM reviews WHERE review_id = $1`, [id])
+    return check.rows.length ? true : false
 }
-exports.addCount = async (query, id) => {
-    const reviewTable = db.query(query,[id])
-    const commentCount = db.query(`SELECT COUNT(*) FROM comments  WHERE review_id = $1`,[id])
-    let result = await Promise.all([reviewTable, commentCount])
-    result[0].rows[0].comment_count = result[1].rows[0].count
-    return result[0]
+
+exports.validInput = (sortedBy, order, category) => {
+    const orders = ['asc', 'desc']
+    const cats = [
+        'strategy',
+        'hidden-roles',
+        'dexterity',
+        'push-your-luck',
+        'roll-and-write',
+        'deck-building',
+        'engine-building',
+        'euro game',
+        'social deduction',
+        "children's games",
+    ]
+    let sortable = [
+        'owner',
+        'title',
+        'review_id',
+        'category',
+        'review_img_url',
+        'created_at',
+        'votes',
+    ]
+    if (sortable.includes(sortedBy) && orders.includes(order.toLowerCase())) {
+        if (category != undefined) {
+            if (!cats.includes(category)) {
+                return false
+            }
+        }
+        return true
+    }
+    return false
 }
