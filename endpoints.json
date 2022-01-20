@@ -138,9 +138,22 @@
 		"exampleResponse": {
 			"users": [
 				{
-					"username": "dav3rid",
+					"username": "testUser1"
+				},
+				{
+					"username": "testUser2"
+				}
+			]
+		}
+	},
+	"GET /api/users/:username": {
+		"description": "returns the profile of the specified user",
+		"exampleResponse": {
+			"user": [
+				{
+					"username": "testUser1",
 					"avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
-					"name": "dave"
+					"name": "Tester"
 				}
 			]
 		}

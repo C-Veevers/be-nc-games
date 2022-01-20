@@ -337,7 +337,7 @@ describe.only('API/USERS', () => {
                 })
         })
         test('status 200: object has valid keys', () => {
-            let keys = ["username", "avatar_url", "name"]
+            let keys = ["username"]
             return request(app)
                 .get('/api/users')
                 .expect(200)
@@ -355,5 +355,42 @@ describe.only('API/USERS', () => {
                     expect(res.body.users.length).toBe(4);
                 })
         })
+    });
+    describe('Get User by username', () => {
+        test('status 200: should return an object', () => {
+            return request(app)
+                .get('/api/users/philippaclaire9')
+                .expect(200)
+                .then(res => {
+                    expect(typeof res.body.user).toBe("object");
+                })
+        });
+        test('status 200: object has valid keys', () => {
+            let keys = ["username", "avatar_url", "name"]
+            return request(app)
+                .get('/api/users/philippaclaire9')
+                .expect(200)
+                .then(res => {
+                    res.body.user.forEach(result => {
+                        expect(Object.keys(result)).toEqual(keys)
+                    })
+                })
+        })
+        test('status 200: returns the correct number of users (1)', () => {
+            return request(app)
+                .get('/api/users/philippaclaire9')
+                .expect(200)
+                .then(res => {
+                    expect(res.body.user.length).toBe(1);
+                })
+        })
+        test('status 404: should reject invalid username with "Not Found', () => {
+            return request(app)
+                .get('/api/users/philippaclaire91')
+                .expect(404)
+                .then(res => {
+                    expect(res.body.msg).toBe("Not Found");
+                })
+        });
     });
 });
