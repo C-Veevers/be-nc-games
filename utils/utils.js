@@ -7,18 +7,7 @@ exports.hasReview = async (id) => {
 
 exports.validInput = (sortedBy, order, category, limit, page) => {
     const orders = ['asc', 'desc']
-    const cats = [
-        'strategy',
-        'hidden-roles',
-        'dexterity',
-        'push-your-luck',
-        'roll-and-write',
-        'deck-building',
-        'engine-building',
-        'euro game',
-        'social deduction',
-        "children's games",
-    ]
+    const cats = this.getCats()
     let sortable = [
         'owner',
         'title',
@@ -40,4 +29,12 @@ exports.validInput = (sortedBy, order, category, limit, page) => {
         return true
     }
     return false
+}
+exports.getCats = async () => {
+    const validCat = []
+    const cats = await db.query('SELECT slug FROM categories')
+    cats.rows.forEach(cat => {
+        validCat.push(cat.slug)
+    })
+    return validCat
 }

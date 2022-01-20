@@ -1,7 +1,6 @@
-const { promises } = require('../../../backend/be-rated-restaurants/node_modules/form-data')
-const { removeListener } = require('../db')
+const format = require('pg-format')
 const db = require('../db')
-const { hasReview, validInput } = require('../utils/utils')
+const { hasReview, validInput, getCats } = require('../utils/utils')
 
 exports.fetchReviews = async (sortedBy = 'created_at', order = 'asc', category, limit, page = 0) => {
 	const queryValues = [limit, (limit * page)]
@@ -41,4 +40,20 @@ exports.updateReview = async (id, inc) => {
 	let queryString = `UPDATE reviews SET votes = votes+$1 WHERE review_id = $2 RETURNING *;`
 	let input = [inc, id]
 	return await db.query(queryString, input)
+}
+
+exports.insertReview = async (owner, title, review_body, designer, category, review_img_url) => {
+	let validCat = await getCats()
+	if (!validCat.includes(category)) {
+		return Promise.reject({ status: 400, msg: "Bad Request" })
+	}
+	console.log(validCat)
+	const values = [owner, title, review_body, designer, category, review_img_url]
+	const queryString = format(`
+	INSERT INTO reviews 
+	(owner, title, review_body, designer, category, review_img_url)
+	VALUES (%L) 
+	RETURNING *;
+	`, values)
+	return await db.query(queryString)
 }

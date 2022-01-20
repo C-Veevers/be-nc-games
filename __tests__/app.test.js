@@ -374,6 +374,47 @@ describe('API/REVIEWS', () => {
                 })
         });
     });
+    describe.only('post new Review ', () => {
+        let body = {
+            owner: "bainesface",
+            title: "Mono-monopoly",
+            review_body: "It lasts for hours and no one is really sure what the rules are",
+            designer: "satan probably",
+            category: "children's games"
+        }
+        test('status 201: should return an object', () => {
+            return request(app)
+                .post('/api/reviews')
+                .send(body)
+                .expect(201)
+                .then(res => {
+                    expect(typeof res.body.review).toBe("object");
+                })
+        });
+        test('status 201: should return an object', () => {
+            return request(app)
+                .post('/api/reviews')
+                .send(body)
+                .expect(201)
+                .then(res => {
+                    expect(res.body.review[0].review_id).toBe(14);
+                })
+        });
+        test('status 201: should return an object', () => {
+            return request(app)
+                .post('/api/reviews')
+                .send(body)
+                .expect(201)
+                .then(res => {
+                    return request(app)
+                        .get('/api/reviews/14')
+                        .expect(200)
+                        .then(res => {
+                            expect(res.body.review[0].title).toBe(body.title)
+                        })
+                })
+        });
+    });
 });
 describe('API/COMMENTS', () => {
     describe('Delete Comment', () => {

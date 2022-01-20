@@ -1,4 +1,4 @@
-const { fetchReviews, updateReview, fetchReviewById } = require("../models/reviews.models")
+const { fetchReviews, updateReview, fetchReviewById, insertReview } = require("../models/reviews.models")
 
 exports.getReviews = (req, res, next) => {
     const { sort_by, order, category } = req.query
@@ -34,4 +34,13 @@ exports.patchReview = (req, res, next) => {
             res.send({ review: updatedResult.rows[0] })
         }).catch(err => next(err))
     }
+}
+exports.postReview = (req, res, next) => {
+    const { owner, title, review_body,
+        designer, category,
+        review_img_url = "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png" } = req.body
+    insertReview(owner, title, review_body, designer, category, review_img_url).then(review => {
+        res.status(201)
+        res.send({ review: review.rows })
+    })
 }
