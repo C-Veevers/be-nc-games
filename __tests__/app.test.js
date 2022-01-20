@@ -458,7 +458,6 @@ describe('API/REVIEWS', () => {
                         .get('/api/categories/')
                         .expect(200)
                         .then(res => {
-                            console.log(res.body.categories)
                             expect(res.body.categories.length).toBe(5)
                         })
                 })
@@ -474,6 +473,45 @@ describe('API/REVIEWS', () => {
                 .expect(400)
                 .then(res => {
                     expect(res.body.msg).toBe("Bad Request");
+                })
+        });
+    });
+    describe('Delete Review by review_id ', () => {
+        test('status 201: should return an object', () => {
+            return request(app)
+                .delete('/api/reviews/13')
+                .expect(200)
+                .then(res => {
+                    expect(typeof res.body.review).toBe("object");
+                })
+        });
+        test('status 201: should return the removed review', () => {
+            return request(app)
+                .delete('/api/reviews/13')
+                .expect(200)
+                .then(res => {
+                    expect(res.body.review[0].review_id).toBe(13);
+                })
+        });
+        test('status 200 & 404: review should not exist in the database', () => {
+            return request(app)
+                .delete('/api/reviews/13')
+                .expect(200)
+                .then(res => {
+                    return request(app)
+                        .get('/api/reviews/13')
+                        .expect(404)
+                        .then(res => {
+                            expect(res.body.msg).toBe("Not Found")
+                        })
+                })
+        });
+        test('status 404: should return "Not Found" if invalid id is sent', () => {
+            return request(app)
+                .delete('/api/reviews/15')
+                .expect(404)
+                .then(res => {
+                    expect(res.body.msg).toBe("Not Found");
                 })
         });
     });
