@@ -374,7 +374,7 @@ describe('API/REVIEWS', () => {
                 })
         });
     });
-    describe.only('post new Review ', () => {
+    describe('Post New Review ', () => {
         let body = {
             owner: "bainesface",
             title: "Mono-monopoly",
@@ -391,7 +391,7 @@ describe('API/REVIEWS', () => {
                     expect(typeof res.body.review).toBe("object");
                 })
         });
-        test('status 201: should return an object', () => {
+        test('status 201: should return the added review with ID 14', () => {
             return request(app)
                 .post('/api/reviews')
                 .send(body)
@@ -400,7 +400,7 @@ describe('API/REVIEWS', () => {
                     expect(res.body.review[0].review_id).toBe(14);
                 })
         });
-        test('status 201: should return an object', () => {
+        test('status 201 & 200: new review should exist in the database', () => {
             return request(app)
                 .post('/api/reviews')
                 .send(body)
@@ -412,6 +412,68 @@ describe('API/REVIEWS', () => {
                         .then(res => {
                             expect(res.body.review[0].title).toBe(body.title)
                         })
+                })
+        });
+        test('status 400: should return "Bad Request" if invalid username is given', () => {
+            body.owner = "test"
+            return request(app)
+                .post('/api/reviews')
+                .send(body)
+                .expect(400)
+                .then(res => {
+                    expect(res.body.msg).toBe("Bad Request");
+                })
+        });
+    });
+    describe('Post New Category ', () => {
+        let body = {
+            slug: "physical",
+            description: "gets you up and doing things"
+        }
+        test('status 201: should return an object', () => {
+            return request(app)
+                .post('/api/categories')
+                .send(body)
+                .expect(201)
+                .then(res => {
+                    expect(typeof res.body.category).toBe("object");
+                })
+        });
+        test('status 201: should return the added category', () => {
+            return request(app)
+                .post('/api/categories')
+                .send(body)
+                .expect(201)
+                .then(res => {
+                    expect(res.body.category[0].slug).toBe("physical");
+                })
+        });
+        test('status 201 & 200: new review should exist in the database ( 5 entries )', () => {
+            return request(app)
+                .post('/api/categories')
+                .send(body)
+                .expect(201)
+                .then(res => {
+                    return request(app)
+                        .get('/api/categories/')
+                        .expect(200)
+                        .then(res => {
+                            console.log(res.body.categories)
+                            expect(res.body.categories.length).toBe(5)
+                        })
+                })
+        });
+        test('status 400: should return "Bad Request" if invalid keys are sent', () => {
+            let body = {
+                sluge: "stealth",
+                description: "its basically hide and seek"
+            }
+            return request(app)
+                .post('/api/categories')
+                .send(body)
+                .expect(400)
+                .then(res => {
+                    expect(res.body.msg).toBe("Bad Request");
                 })
         });
     });

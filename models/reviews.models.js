@@ -47,7 +47,6 @@ exports.insertReview = async (owner, title, review_body, designer, category, rev
 	if (!validCat.includes(category)) {
 		return Promise.reject({ status: 400, msg: "Bad Request" })
 	}
-	console.log(validCat)
 	const values = [owner, title, review_body, designer, category, review_img_url]
 	const queryString = format(`
 	INSERT INTO reviews 

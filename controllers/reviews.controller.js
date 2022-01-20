@@ -42,5 +42,5 @@ exports.postReview = (req, res, next) => {
     insertReview(owner, title, review_body, designer, category, review_img_url).then(review => {
         res.status(201)
         res.send({ review: review.rows })
-    })
+    }).catch(err => next(err))
 }
