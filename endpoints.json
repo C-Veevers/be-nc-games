@@ -75,6 +75,7 @@
 	},
 	"GET /api/reviews/:review_id/comments": {
 		"description": "returns an array of comments for the specified ID",
+		"queries": ["limit", "p"],
 		"exampleResponse": {
 			"comments": [
 				{

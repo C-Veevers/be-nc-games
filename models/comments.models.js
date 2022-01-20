@@ -4,7 +4,6 @@ const { validInput } = require("../utils/utils")
 
 exports.fetchCommentsForRevId = async (id, limit, p) => {
    if (!validInput('review_id', 'asc', undefined, limit, p)) {
-      console.log("rejected", limit, p)
       return Promise.reject({ status: 400, msg: "Bad Request" })
    }
    let values = [id, limit, (limit * p)]
