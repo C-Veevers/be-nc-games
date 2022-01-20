@@ -15,7 +15,7 @@ const { welcomeMessage } = require('../controllers/welcome.controller')
 
 
 //end points
-apiRouter.get('/', welcomeMessage)
+apiRouter.get('/', (welcomeMessage))
 
 
 

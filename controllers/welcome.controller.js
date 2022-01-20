@@ -1,5 +1,6 @@
 
 exports.welcomeMessage = (req, res) => {
+    const instruction = require('../endpoints.json')
     res.statusCode = 200;
-    res.send({ msg: "Welcome to the API" });
+    res.json(instruction);
 };

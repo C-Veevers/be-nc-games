@@ -19,12 +19,12 @@ describe('/API', () => {
         });
     });
     describe("attempted to reach the api endpoint", () => {
-        test("status: 200 and returns a welcome message", () => {
+        test("status: 200 returns a json with api instructions", () => {
             return request(app)
                 .get("/api")
                 .expect(200)
                 .then((res) => {
-                    expect(res.body.msg).toBe("Welcome to the API");
+                    expect(typeof res.body).toBe("object");
                 });
         });
     });
@@ -202,7 +202,7 @@ describe('API/REVIEWS', () => {
                     expect(res.body.review.votes).toBe(4)
                 })
         });
-        test.skip('error handling - needs work', () => {
+        test.only('error handling - needs work', () => {
             const update = {
                 inc_mice: -1
             }
@@ -222,6 +222,7 @@ describe('API/REVIEWS', () => {
                 .get('/api/reviews/3/comments')
                 .expect(200)
                 .then(res => {
+                    console.log(res.body)
                     expect(typeof res.body.comments).toBe("object");
                 })
         });
