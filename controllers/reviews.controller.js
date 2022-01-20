@@ -2,7 +2,7 @@ const { fetchReviews, updateReview, fetchReviewById } = require("../models/revie
 
 exports.getReviews = (req, res, next) => {
     const { sort_by, order, category } = req.query
-    const { limit = 10, p } = req.query
+    const { limit = 10, p = 0 } = req.query
     fetchReviews(sort_by, order, category, limit, p).then((reviewTable) => {
         res.status(200)
         res.send({ reviews: reviewTable.rows })

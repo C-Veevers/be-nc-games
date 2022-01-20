@@ -29,6 +29,7 @@ exports.validInput = (sortedBy, order, category, limit, page) => {
         'votes',
     ]
     if (isNaN(limit) || isNaN(page)) {
+        console.log("limit or page NaN")
         return false
     }
     if (sortable.includes(sortedBy) && orders.includes(order.toLowerCase())) {

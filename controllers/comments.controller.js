@@ -2,7 +2,8 @@ const { fetchCommentsForRevId, updateCommentsForRevId, removeCommentForComID, fe
 
 exports.getCommentsByRevId = (req, res, next) => {
    const { revId } = req.params
-   fetchCommentsForRevId(revId).then(comments => {
+   const { limit = 10, p = 0 } = req.query
+   fetchCommentsForRevId(revId, limit, p).then(comments => {
       if (comments.rowCount == 0) {
          return Promise.reject({ status: 404, msg: "Not Found" })
       } else {

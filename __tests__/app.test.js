@@ -255,13 +255,37 @@ describe('API/REVIEWS', () => {
                 })
         });
     });
-    describe('Get Comments By Review ID', () => {
+    describe('Get Comments By Review ID (3)', () => {
         test('status 200: should return an object', () => {
             return request(app)
                 .get('/api/reviews/3/comments')
                 .expect(200)
                 .then(res => {
                     expect(typeof res.body.comments).toBe("object");
+                })
+        });
+        test('status 200: should return 3 items', () => {
+            return request(app)
+                .get('/api/reviews/3/comments')
+                .expect(200)
+                .then(res => {
+                    expect(res.body.comments.length).toBe(3);
+                })
+        });
+        test('status 200: should return 2 item when limit=2', () => {
+            return request(app)
+                .get('/api/reviews/3/comments?limit=2')
+                .expect(200)
+                .then(res => {
+                    expect(res.body.comments.length).toBe(2);
+                })
+        });
+        test('status 200: should return 1 item when limit=2 and p=1', () => {
+            return request(app)
+                .get('/api/reviews/3/comments?limit=2&p=1')
+                .expect(200)
+                .then(res => {
+                    expect(res.body.comments.length).toBe(1);
                 })
         });
         test('status 200: object should have required keys', () => {
@@ -273,6 +297,22 @@ describe('API/REVIEWS', () => {
                     res.body.comments.forEach(result => {
                         expect(Object.keys(result)).toEqual(keys)
                     })
+                })
+        });
+        test('status 400: "Bad Request" if limit is not a number', () => {
+            return request(app)
+                .get('/api/reviews/3/comments?limit=a')
+                .expect(400)
+                .then(res => {
+                    expect(res.body.msg).toBe("Bad Request");
+                })
+        });
+        test('status 400: "Bad Request" if page is not a number', () => {
+            return request(app)
+                .get('/api/reviews/3/comments?limit=2&p=a')
+                .expect(400)
+                .then(res => {
+                    expect(res.body.msg).toBe("Bad Request");
                 })
         });
         test('status 404: Returns Not Found for id with no comments', () => {

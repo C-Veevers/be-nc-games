@@ -1,12 +1,21 @@
+const { promises } = require("../../../backend/be-rated-restaurants/node_modules/form-data")
 const db = require("../db")
+const { validInput } = require("../utils/utils")
 
-exports.fetchCommentsForRevId = async (id) => {
+exports.fetchCommentsForRevId = async (id, limit, p) => {
+   if (!validInput('review_id', 'asc', undefined, limit, p)) {
+      console.log("rejected", limit, p)
+      return Promise.reject({ status: 400, msg: "Bad Request" })
+   }
+   let values = [id, limit, (limit * p)]
    const cols = `comment_id, comments.votes, comments.created_at, author, reviews.review_body AS body`
    return await db.query(
       `SELECT ${cols} FROM comments
       LEFT JOIN reviews ON comments.review_id = reviews.review_id
-      WHERE comments.review_id = $1
-      `, [id])
+      WHERE comments.review_id = $1 
+      LIMIT $2 
+      OFFSET $3
+      `, values)
 }
 
 exports.updateCommentsForRevId = async (id, username, body) => {
