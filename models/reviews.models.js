@@ -60,7 +60,7 @@ exports.insertReview = async (owner, title, review_body, designer, category, rev
 exports.removeReviewWithId = async (id) => {
 	let check = await hasReview(id)
 	if (!check) {
-		return Promise.reject({ status: 404, msg: "Not Found" })
+		return Promise.reject({ status: 204, msg: "No Content" })
 	}
 	const queryString = `DELETE FROM reviews WHERE review_id = $1 RETURNING *;`
 	return await db.query(queryString, [id])

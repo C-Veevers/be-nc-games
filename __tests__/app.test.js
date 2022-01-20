@@ -500,18 +500,18 @@ describe('API/REVIEWS', () => {
                 .then(res => {
                     return request(app)
                         .get('/api/reviews/13')
-                        .expect(404)
+                        .expect(204)
                         .then(res => {
-                            expect(res.body.msg).toBe("Not Found")
+                            expect(res.body.msg).toBe("No Content")
                         })
                 })
         });
         test('status 404: should return "Not Found" if invalid id is sent', () => {
             return request(app)
                 .delete('/api/reviews/15')
-                .expect(404)
+                .expect(204)
                 .then(res => {
-                    expect(res.body.msg).toBe("Not Found");
+                    expect(res.body.msg).toBe("No Content");
                 })
         });
     });
