@@ -5,7 +5,7 @@ exports.hasReview = async (id) => {
     return check.rows.length ? true : false
 }
 
-exports.validInput = (sortedBy, order, category) => {
+exports.validInput = (sortedBy, order, category, limit, page) => {
     const orders = ['asc', 'desc']
     const cats = [
         'strategy',
@@ -28,6 +28,9 @@ exports.validInput = (sortedBy, order, category) => {
         'created_at',
         'votes',
     ]
+    if (isNaN(limit) || isNaN(page)) {
+        return false
+    }
     if (sortable.includes(sortedBy) && orders.includes(order.toLowerCase())) {
         if (category != undefined) {
             if (!cats.includes(category)) {

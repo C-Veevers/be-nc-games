@@ -110,12 +110,52 @@ describe('API/REVIEWS', () => {
                     })
                 })
         });
-        test('status 200: returned items have all reviews', () => {
+        test('status 200: returned page=0 items have 10 reviews', () => {
             return request(app)
                 .get('/api/reviews')
                 .expect(200)
                 .then(res => {
-                    expect(res.body.reviews.length).toBe(13);
+                    expect(res.body.reviews.length).toBe(10);
+                })
+        });
+        test('status 200: returned page=1 items have 3 reviews', () => {
+            return request(app)
+                .get('/api/reviews?p=1')
+                .expect(200)
+                .then(res => {
+                    expect(res.body.reviews.length).toBe(3);
+                })
+        });
+        test('status 400: page is not a number return "Bad Request', () => {
+            return request(app)
+                .get('/api/reviews?p=a')
+                .expect(400)
+                .then(res => {
+                    expect(res.body.msg).toBe("Bad Request");
+                })
+        });
+        test('status 400: limit is not a number return "Bad Request', () => {
+            return request(app)
+                .get('/api/reviews?limit=a')
+                .expect(400)
+                .then(res => {
+                    expect(res.body.msg).toBe("Bad Request");
+                })
+        });
+        test('status 200: returned 5 reviews when limit=5', () => {
+            return request(app)
+                .get('/api/reviews?limit=5')
+                .expect(200)
+                .then(res => {
+                    expect(res.body.reviews.length).toBe(5);
+                })
+        });
+        test('status 200: returned 11 reviews when limit=11', () => {
+            return request(app)
+                .get('/api/reviews?limit=11')
+                .expect(200)
+                .then(res => {
+                    expect(res.body.reviews.length).toBe(11);
                 })
         });
     });

@@ -2,18 +2,18 @@ const { removeListener } = require('../db')
 const db = require('../db')
 const { hasReview, validInput } = require('../utils/utils')
 
-exports.fetchReviews = async (sortedBy = 'created_at', order = 'asc', category) => {
+exports.fetchReviews = async (sortedBy = 'created_at', order = 'asc', category, limit, page = 0) => {
 	let cols = `owner, title, reviews.review_id, category, review_img_url, reviews.created_at, reviews.votes, COUNT(comments.review_id) AS comment_count`
 	let queryString = `SELECT ${cols} FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id`
-	if (!validInput(sortedBy, order, category)) {
+	if (!validInput(sortedBy, order, category, limit, page)) {
 		return Promise.reject({ status: 400, msg: 'Bad Request' })
 	}
-	const queryValues = []
+	const queryValues = [limit, (limit * page)]
 	if (category != undefined) {
-		queryString += ` WHERE category = $1`
+		queryString += ` WHERE category = $3`
 		queryValues.push(category)
 	}
-	queryString += ` GROUP BY reviews.review_id ORDER BY ${sortedBy} ${order}`
+	queryString += ` GROUP BY reviews.review_id ORDER BY ${sortedBy} ${order} LIMIT $1 OFFSET $2`
 	return await db.query(queryString, queryValues)
 }
 
