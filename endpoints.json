@@ -74,9 +74,7 @@
 		}
 	},
 	"GET /api/reviews/:review_id/comments": {
-		"description": "receives an object to update the vote count of the specified review",
-		"example increase by one": { "inc_votes": 1 },
-		"example decrease by one": { "inc_votes": -1 },
+		"description": "returns an array of comments for the specified ID",
 		"exampleResponse": {
 			"comments": [
 				{
@@ -131,6 +129,18 @@
 					"created_at": "2021-03-27T19:49:48.110Z",
 					"author": "testUser",
 					"body": "We couldn't find the werewolf!"
+				}
+			]
+		}
+	},
+	"GET /api/users": {
+		"description": "returns an array of users",
+		"exampleResponse": {
+			"users": [
+				{
+					"username": "dav3rid",
+					"avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+					"name": "dave"
 				}
 			]
 		}

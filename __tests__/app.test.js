@@ -202,7 +202,7 @@ describe('API/REVIEWS', () => {
                     expect(res.body.review.votes).toBe(4)
                 })
         });
-        test.only('error handling - needs work', () => {
+        test.skip('error handling - needs work', () => {
             const update = {
                 inc_mice: -1
             }
@@ -322,6 +322,37 @@ describe('API/COMMENTS', () => {
                     return request(app)
                         .get('/api/comments/3')
                         .expect(204)
+                })
+        })
+    });
+});
+describe.only('API/USERS', () => {
+    describe('Get List of Users', () => {
+        test('status 200: returns an object', () => {
+            return request(app)
+                .get('/api/users')
+                .expect(200)
+                .then(res => {
+                    expect(typeof res.body.users).toBe("object");
+                })
+        })
+        test('status 200: object has valid keys', () => {
+            let keys = ["username", "avatar_url", "name"]
+            return request(app)
+                .get('/api/users')
+                .expect(200)
+                .then(res => {
+                    res.body.users.forEach(result => {
+                        expect(Object.keys(result)).toEqual(keys)
+                    })
+                })
+        })
+        test('status 200: returns the correct number of users (4)', () => {
+            return request(app)
+                .get('/api/users')
+                .expect(200)
+                .then(res => {
+                    expect(res.body.users.length).toBe(4);
                 })
         })
     });

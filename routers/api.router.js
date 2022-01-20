@@ -5,9 +5,11 @@ const apiRouter = express.Router()
 const reviewRouter = require('./reviews.router')
 const categoryRouter = require('./categories.router')
 const commentRouter = require('./comments.router')
+const userRouter = require('./users.router')
 apiRouter.use('/reviews', reviewRouter)
 apiRouter.use('/categories', categoryRouter)
 apiRouter.use('/comments', commentRouter)
+apiRouter.use('/users', userRouter)
 
 
 //controllers
