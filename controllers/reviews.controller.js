@@ -24,9 +24,13 @@ exports.getReviewById = (req, res, next) => {
 exports.patchReview = (req, res, next) => {
     const { revId } = req.params
     const { inc_votes } = req.body
-    updateReview(revId, inc_votes).then(updatedResult => {
-        res.status(200)
-        res.send({ review: updatedResult.rows[0] })
-    })
-        .catch(err => next(err))
+    if (inc_votes == undefined) {
+        res.status(400)
+        res.send({ msg: "Bad Request" })
+    } else {
+        updateReview(revId, inc_votes).then(updatedResult => {
+            res.status(200)
+            res.send({ review: updatedResult.rows[0] })
+        }).catch(err => next(err))
+    }
 }

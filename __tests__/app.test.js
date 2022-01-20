@@ -202,17 +202,16 @@ describe('API/REVIEWS', () => {
                     expect(res.body.review.votes).toBe(4)
                 })
         });
-        test.skip('error handling - needs work', () => {
+        test('status 400: if input is incorrect rejects with "Bad Request"', () => {
             const update = {
-                inc_mice: -1
+                inc_boats: -1
             }
             return request(app)
                 .patch('/api/reviews/3')
                 .send(update)
-                .expect(200)
+                .expect(400)
                 .then(res => {
-                    console.log(res.body)
-                    expect(res.body.review.votes).toBe(4)
+                    expect(res.body.msg).toBe("Bad Request")
                 })
         });
     });
@@ -222,7 +221,6 @@ describe('API/REVIEWS', () => {
                 .get('/api/reviews/3/comments')
                 .expect(200)
                 .then(res => {
-                    console.log(res.body)
                     expect(typeof res.body.comments).toBe("object");
                 })
         });
@@ -326,7 +324,7 @@ describe('API/COMMENTS', () => {
         })
     });
 });
-describe.only('API/USERS', () => {
+describe('API/USERS', () => {
     describe('Get List of Users', () => {
         test('status 200: returns an object', () => {
             return request(app)
