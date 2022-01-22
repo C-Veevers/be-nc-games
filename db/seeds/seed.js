@@ -2,7 +2,7 @@ const db = require('../');
 const format = require('pg-format');
 
 const seed = (data) => {
-  const { categoryData, commentData, reviewData, userData } = data; 
+  const { categoryData, commentData, reviewData, userData } = data;
   const tables = ['categories', 'users', 'reviews', 'comments']
   const drop = `DROP TABLE IF EXISTS`
   const create = `CREATE TABLE`
@@ -34,7 +34,7 @@ const seed = (data) => {
         review_id SERIAL PRIMARY KEY,
         title VARCHAR(60) NOT NULL,
         review_body TEXT NOT NULL,
-        designer VARCHAR(255),
+        designer VARCHAR(255) NOT NULL,
         review_img_url TEXT,
         votes INT DEFAULT 0,
         category VARCHAR REFERENCES categories(slug) NOT NULL,
@@ -49,7 +49,7 @@ const seed = (data) => {
         review_id INT REFERENCES reviews(review_id) NOT NULL,
         votes INT DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        body TEXT        
+        body TEXT NOT NULL       
       );
     `)
     }).then(() => {

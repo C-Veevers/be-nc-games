@@ -45,6 +45,7 @@ describe('API/CATEGORIES', () => {
                 .get('/api/categories')
                 .expect(200)
                 .then(res => {
+                    expect(res.body.categories.length > 0).toBe(true)
                     res.body.categories.forEach(result => {
                         expect(Object.keys(result)).toEqual(keys)
                     })
@@ -73,42 +74,21 @@ describe('API/REVIEWS', () => {
                     expect(typeof res.body.reviews).toBe("object")
                 })
         });
-        test("status 200: returns reviews in order of date", () => {
+        test.only("status 200: returns reviews ?sort_by=created_at in descending order by default", () => {
             return request(app)
                 .get("/api/reviews?sort_by=created_at")
-                .expect(200)
-                .then((res) => {
-                    expect(res.body.reviews).toBeSortedBy('created_at')
-                });
-        });
-        test("status 200: returns reviews in order of date Descending ", () => {
-            return request(app)
-                .get("/api/reviews?order=DESC")
                 .expect(200)
                 .then((res) => {
                     expect(res.body.reviews).toBeSortedBy('created_at', { descending: true })
                 });
         });
-        test.skip("status 200: returns reviews for chosen category - broken by total_count", () => {
+        test.only("status 200: returns reviews in ?order=asc of date ascending ", () => {
             return request(app)
-                .get("/api/reviews?category=children's games")
+                .get("/api/reviews?order=ASC")
                 .expect(200)
                 .then((res) => {
-                    res.body.reviews.forEach(review => {
-                        expect(review.category).toBe("children's games")
-                    })
-
+                    expect(res.body.reviews).toBeSortedBy('created_at', { descending: false })
                 });
-        });
-        test.skip('status 200: returned items have all keys - broken by total_count', () => {
-            return request(app)
-                .get('/api/reviews')
-                .expect(200)
-                .then(res => {
-                    res.body.reviews.forEach(result => {
-                        expect(Object.keys(result)).toEqual(keys)
-                    })
-                })
         });
         test('status 200: returned page=0 items have 10 reviews', () => {
             return request(app)
@@ -176,6 +156,14 @@ describe('API/REVIEWS', () => {
                     expect(typeof res.body.review).toBe("object")
                 })
         });
+        test('status 200: object has a comment_count', () => {
+            return request(app)
+                .get('/api/reviews/3')
+                .expect(200)
+                .then(res => {
+                    expect(res.body.review[0].comment_count).toBe("3")
+                })
+        });
         test('status 200: returns object with correct ID', () => {
             return request(app)
                 .get('/api/reviews/3')
@@ -184,13 +172,10 @@ describe('API/REVIEWS', () => {
                     expect(res.body.review[0].review_id).toBe(3)
                 })
         });
-        test('status 404: returns "Review Not Found" when id is not found in table', () => {
+        test('status 204: returns "No Content" when id is not found in table', () => {
             return request(app)
                 .get('/api/reviews/14')
-                .expect(404)
-                .then(res => {
-                    expect(res.body.msg).toBe("Not Found")
-                })
+                .expect(204)
         });
         test('status 400: returns "Bad Request" when id is not valid', () => {
             return request(app)
@@ -262,6 +247,54 @@ describe('API/REVIEWS', () => {
                     expect(res.body.msg).toBe("Bad Request")
                 })
         });
+        test('status 400: if id is incorrect rejects with "Bad Request"', () => {
+            const update = {
+                inc_votes: -1
+            }
+            return request(app)
+                .patch('/api/reviews/15')
+                .send(update)
+                .expect(400)
+                .then(res => {
+                    expect(res.body.msg).toBe("Bad Request")
+                })
+        });
+        test('status 400: if id type is incorrect rejects with "Bad Request"', () => {
+            const update = {
+                inc_votes: -1
+            }
+            return request(app)
+                .patch('/api/reviews/"not"')
+                .send(update)
+                .expect(400)
+                .then(res => {
+                    expect(res.body.msg).toBe("Bad Request")
+                })
+        });
+        test('status 400: if vote property is not a number rejects with "Bad Request"', () => {
+            const update = {
+                inc_votes: "a"
+            }
+            return request(app)
+                .patch('/api/reviews/1')
+                .send(update)
+                .expect(400)
+                .then(res => {
+                    expect(res.body.msg).toBe("Bad Request")
+                })
+        });
+        test('status 400: if vote key is not present rejects with "Bad Request"', () => {
+            const update = {
+
+            }
+            return request(app)
+                .patch('/api/reviews/1')
+                .send(update)
+                .expect(400)
+                .then(res => {
+                    expect(res.body.msg).toBe("Bad Request")
+                })
+        });
     });
     describe('Get Comments By Review ID (3)', () => {
         test('status 200: should return an object', () => {
@@ -302,6 +335,7 @@ describe('API/REVIEWS', () => {
                 .get('/api/reviews/3/comments')
                 .expect(200)
                 .then(res => {
+                    expect(res.body.comments.length > 0).toBe(true)
                     res.body.comments.forEach(result => {
                         expect(Object.keys(result)).toEqual(keys)
                     })
@@ -501,18 +535,12 @@ describe('API/REVIEWS', () => {
                     return request(app)
                         .get('/api/reviews/13')
                         .expect(204)
-                        .then(res => {
-                            expect(res.body.msg).toBe("No Content")
-                        })
                 })
         });
-        test('status 404: should return "Not Found" if invalid id is sent', () => {
+        test('status 204: should return "NO Content" if invalid id is sent', () => {
             return request(app)
                 .delete('/api/reviews/15')
                 .expect(204)
-                .then(res => {
-                    expect(res.body.msg).toBe("No Content");
-                })
         });
     });
 });
@@ -569,6 +597,7 @@ describe('API/USERS', () => {
                 .get('/api/users')
                 .expect(200)
                 .then(res => {
+                    expect(res.body.users.length > 0).toBe(true)
                     res.body.users.forEach(result => {
                         expect(Object.keys(result)).toEqual(keys)
                     })
@@ -598,9 +627,7 @@ describe('API/USERS', () => {
                 .get('/api/users/philippaclaire9')
                 .expect(200)
                 .then(res => {
-                    res.body.user.forEach(result => {
-                        expect(Object.keys(result)).toEqual(keys)
-                    })
+                    expect(Object.keys(res.body.user[0])).toEqual(keys)
                 })
         })
         test('status 200: returns the correct number of users (1)', () => {

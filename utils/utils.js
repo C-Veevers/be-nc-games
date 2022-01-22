@@ -7,7 +7,7 @@ exports.hasReview = async (id) => {
 
 exports.validInput = (sortedBy, order, category, limit, page) => {
     const orders = ['asc', 'desc']
-    const cats = this.getCats()
+    const categories = this.getCategories()
     let sortable = [
         'owner',
         'title',
@@ -22,7 +22,7 @@ exports.validInput = (sortedBy, order, category, limit, page) => {
     }
     if (sortable.includes(sortedBy) && orders.includes(order.toLowerCase())) {
         if (category != undefined) {
-            if (!cats.includes(category)) {
+            if (!categories.includes(category)) {
                 return false
             }
         }
@@ -30,10 +30,10 @@ exports.validInput = (sortedBy, order, category, limit, page) => {
     }
     return false
 }
-exports.getCats = async () => {
+exports.getCategories = async () => {
     const validCat = []
-    const cats = await db.query('SELECT slug FROM categories')
-    cats.rows.forEach(cat => {
+    const categories = await db.query('SELECT slug FROM categories')
+    categories.rows.forEach(cat => {
         validCat.push(cat.slug)
     })
     return validCat

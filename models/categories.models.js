@@ -1,10 +1,10 @@
 const format = require("pg-format")
 const db = require("../db")
 
-exports.fetchCats = async () => {
+exports.fetchCategory = async () => {
     return await db.query('SELECT * FROM categories')
 }
-exports.insertCats = async (slug, description) => {
+exports.insertCategory = async (slug, description) => {
     const values = [slug, description]
     const queryString = format(`
     INSERT INTO categories 

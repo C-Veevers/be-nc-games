@@ -1,18 +1,19 @@
-const { fetchCats, insertCats } = require("../models/categories.models")
+const { fetchCategory, insertCategory } = require("../models/categories.models")
 
-exports.getCats = (req, res, next) => {
-    fetchCats()
+exports.getCategory = (req, res, next) => {
+    fetchCategory()
         .then(categories => {
             res.status(200)
             res.send({ categories: categories.rows })
         })
         .catch(err => next(err))
 }
-exports.postCats = (req, res, next) => {
+exports.postCategory = (req, res, next) => {
     const { slug, description } = req.body
-    insertCats(slug, description)
-        .then(cat => {
+    insertCategory(slug, description)
+        .then(category => {
             res.status(201)
-            res.send({ category: cat.rows })
-        }).catch(err => next(err))
+            res.send({ category: category.rows })
+        })
+        .catch(err => next(err))
 }

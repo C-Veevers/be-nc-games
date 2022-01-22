@@ -1,4 +1,3 @@
-const { promises } = require("../../../backend/be-rated-restaurants/node_modules/form-data")
 const db = require("../db")
 const { validInput } = require("../utils/utils")
 

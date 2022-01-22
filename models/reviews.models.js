@@ -1,8 +1,8 @@
 const format = require('pg-format')
 const db = require('../db')
-const { hasReview, validInput, getCats } = require('../utils/utils')
+const { hasReview, validInput, getCategories } = require('../utils/utils')
 
-exports.fetchReviews = async (sortedBy = 'created_at', order = 'asc', category, limit, page = 0) => {
+exports.fetchReviews = async (sortedBy = 'created_at', order = 'desc', category, limit, page = 0) => {
 	const queryValues = [limit, (limit * page)]
 	let cols = `owner, title, reviews.review_id, category, review_img_url, reviews.created_at, reviews.votes, COUNT(comments.review_id) AS comment_count`
 	let queryString = `SELECT ${cols} FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id`
@@ -29,7 +29,7 @@ exports.fetchReviewById = async (id) => {
 	let queryString = `SELECT ${cols} FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id`
 
 	if (!await hasReview(id)) {
-		return Promise.reject({ status: 404, msg: 'Not Found' })
+		return Promise.reject({ status: 204, msg: 'No Content' })
 	} else {
 		queryString += ` WHERE reviews.review_id = $1 GROUP BY reviews.review_id`
 		return await db.query(queryString, [id])
@@ -37,14 +37,18 @@ exports.fetchReviewById = async (id) => {
 }
 
 exports.updateReview = async (id, inc) => {
-	let queryString = `UPDATE reviews SET votes = votes+$1 WHERE review_id = $2 RETURNING *;`
-	let input = [inc, id]
-	return await db.query(queryString, input)
+	if (!await hasReview(id)) {
+		return Promise.reject({ status: 400, msg: 'Bad Request' })
+	} else {
+		const queryString = `UPDATE reviews SET votes = votes+$1 WHERE review_id = $2 RETURNING *;`
+		const input = [inc, id]
+		return await db.query(queryString, input)
+	}
 }
 
 exports.insertReview = async (owner, title, review_body, designer, category, review_img_url) => {
-	let validCat = await getCats()
-	if (!validCat.includes(category)) {
+	let validCategory = await getCategories()
+	if (!validCategory.includes(category)) {
 		return Promise.reject({ status: 400, msg: "Bad Request" })
 	}
 	const values = [owner, title, review_body, designer, category, review_img_url]
