@@ -5,9 +5,9 @@ exports.hasReview = async (id) => {
     return check.rows.length ? true : false
 }
 
-exports.validInput = (sortedBy, order, category, limit, page) => {
+exports.validInput = async (sortedBy, order, category, limit, page) => {
     const orders = ['asc', 'desc']
-    const categories = this.getCategories()
+    const categories = await this.getCategories()
     let sortable = [
         'owner',
         'title',
