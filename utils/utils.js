@@ -22,7 +22,6 @@ exports.validInput = async (sortedBy, order, category, limit, page) => {
     }
     if (sortable.includes(sortedBy) && orders.includes(order.toLowerCase())) {
         if (category != undefined) {
-            console.log(categories, category)
             if (!categories.includes(category)) {
                 return false
             }
