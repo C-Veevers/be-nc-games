@@ -15,7 +15,7 @@ exports.fetchCommentsForRevId = async (id, limit, p) => {
       OFFSET $3
       `, values)
 }
-
+//
 exports.updateCommentsForRevId = async (id, username, body) => {
    return await db.query(`
       INSERT INTO comments(review_id, author, body)
