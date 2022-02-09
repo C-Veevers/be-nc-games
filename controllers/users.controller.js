@@ -1,4 +1,4 @@
-const { fetchUsers, fetchUserWithId } = require("../models/users.models")
+const { fetchUsers, fetchUserWithId, addUser } = require("../models/users.models")
 
 exports.getUsers = (req, res, next) => {
    fetchUsers().then(users => {
@@ -16,4 +16,11 @@ exports.getUserById = (req, res, next) => {
          res.send({ user: user.rows })
       }
    }).catch(err => next(err))
+}
+exports.saveUser = (req, res, next) => {
+   const { username, name, url } = req.params
+   addUser(username, name, url).then(res => {
+      res.status(201)
+      res.send({ user: res.rows })
+   })
 }

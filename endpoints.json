@@ -158,5 +158,22 @@
 				}
 			]
 		}
+	},
+	"POST /api/users/": {
+		"description": "Creates a new user",
+		"example": {
+			"username": "testUser1",
+			"avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+			"name": "Tester"
+		},
+		"exampleResponse": {
+			"user": [
+				{
+					"username": "testUser1",
+					"avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+					"name": "Tester"
+				}
+			]
+		}
 	}
 }
