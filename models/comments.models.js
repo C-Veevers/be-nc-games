@@ -6,7 +6,7 @@ exports.fetchCommentsForRevId = async (id, limit, p) => {
       return Promise.reject({ status: 400, msg: "Bad Request" })
    }
    let values = [id, limit, (limit * p)]
-   const cols = `comment_id, comments.votes, comments.created_at, author, reviews.review_body AS body`
+   const cols = `comment_id, comments.votes, comments.created_at, author, comments.review_body AS body`
    return await db.query(
       `SELECT ${cols} FROM comments
       LEFT JOIN reviews ON comments.review_id = reviews.review_id

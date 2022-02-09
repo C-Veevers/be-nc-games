@@ -84,7 +84,8 @@ const seed = (data) => {
       const comArray = commentData.map((com, index) => {
         return [com.body, com.votes, com.author, com.review_id, com.created_at]
       })
-      const comItems = format(`${insert} ${tables[3]}
+      console.log(comArray[0])
+      const comItems = format(`${insert} comments
       (body, votes, author, review_id, created_at)
       VALUES %L
       RETURNING *;
@@ -93,8 +94,5 @@ const seed = (data) => {
     }).then(() => {
     })
 };
-
-
-
 
 module.exports = seed;
