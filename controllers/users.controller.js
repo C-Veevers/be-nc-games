@@ -18,8 +18,8 @@ exports.getUserById = (req, res, next) => {
    }).catch(err => next(err))
 }
 exports.saveUser = (req, res, next) => {
-   const { username, name, url } = req.body
-   addUser(username, name, url).then(user => {
+   const { username, name, avatar_url } = req.body
+   addUser(username, name, avatar_url).then(user => {
       res.status(201)
       res.send({ user: user.rows })
    })
