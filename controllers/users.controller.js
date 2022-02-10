@@ -19,6 +19,7 @@ exports.getUserById = (req, res, next) => {
 }
 exports.saveUser = (req, res, next) => {
    const { username, name, url } = req.params
+   console.log(req.params, "<---")
    addUser(username, name, url).then(res => {
       res.status(201)
       res.send({ user: res.rows })
