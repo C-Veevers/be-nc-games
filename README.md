@@ -12,8 +12,14 @@ Project time: 1 week
 You must have node.js installed (17.0.1)
 You must have psql installed (12.9)
 
-Once forked / downloaded, you will need to install the packages:
+Clone this repo by clicking the green 'code' link at the top of this page, copy your prefered link or download the code.
+
+Once Cloned / downloaded, you will need to install the packages:
 ``npm install``
+
+You will need to create _two_ `.env` files for this project: `.env.test` and `.env.development`.
+Into each, add `PGDATABASE=nc_games_test` and `PGDATABASE=nc_games` respectivly.
+You will also need to add `PGPASSWORD=` followed by the password you selected during the PSQL setup.
 
 Create the databases:
 ``npm run setup-dbs``

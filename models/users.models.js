@@ -7,10 +7,15 @@ exports.fetchUsers = async () => {
    `)
 }
 exports.fetchUserWithId = async (id) => {
-   return await db.query(`
+   const result = await db.query(`
    SELECT * FROM users
    WHERE username = $1
    `, [id])
+   if (result.rowCount === 0) {
+      return Promise.reject({ status: 404, msg: "Not Found" })
+   } else {
+      return result
+   }
 }
 exports.addUser = async (username, name, url) => {
    const values = [username, name, url]

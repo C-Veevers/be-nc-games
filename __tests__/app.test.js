@@ -3,6 +3,7 @@ const app = require("../app");
 const testData = require('../db/data/test-data/');
 const seed = require('../db/seeds/seed');
 const request = require("supertest");
+const reviews = require('../db/data/test-data/reviews');
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -90,6 +91,26 @@ describe('API/REVIEWS', () => {
                     expect(res.body.reviews).toBeSortedBy('created_at', { descending: false })
                 });
         });
+        test("status 200: returns only dexterity when reviews?category=dexterity", () => {
+            return request(app)
+                .get("/api/reviews?category=dexterity")
+                .expect(200)
+                .then((res) => {
+                    expect(res.body.reviews.length > 0).toBe(true)
+                    res.body.reviews.pop() //removing the total count
+                    res.body.reviews.forEach((result, index) => {
+                        expect(result.category).toBe("dexterity")
+                    })
+                });
+        });
+        test("status 200: returns only total count when reviews?category=invalidCategory", () => {
+            return request(app)
+                .get("/api/reviews?category=invalid")
+                .expect(200)
+                .then((res) => {
+                    expect(res.body.reviews.length == 1).toBe(true)
+                });
+        });
         test('status 200: returned page=0 items have 10 reviews', () => {
             return request(app)
                 .get('/api/reviews')
@@ -146,6 +167,7 @@ describe('API/REVIEWS', () => {
                     expect(res.body.reviews.length).toBe(12);
                 })
         });
+
     });
     describe('Get Reviews By Id', () => {
         test('status 200: returns an object', () => {
@@ -154,6 +176,14 @@ describe('API/REVIEWS', () => {
                 .expect(200)
                 .then(res => {
                     expect(typeof res.body.review).toBe("object")
+                })
+        });
+        test('status 200: one object returned', () => {
+            return request(app)
+                .get('/api/reviews/3')
+                .expect(200)
+                .then(res => {
+                    expect(res.body.review.length).toBe(1)
                 })
         });
         test('status 200: object has a comment_count', () => {
@@ -238,6 +268,18 @@ describe('API/REVIEWS', () => {
         test('status 400: if input is incorrect rejects with "Bad Request"', () => {
             const update = {
                 inc_boats: -1
+            }
+            return request(app)
+                .patch('/api/reviews/3')
+                .send(update)
+                .expect(400)
+                .then(res => {
+                    expect(res.body.msg).toBe("Bad Request")
+                })
+        });
+        test('status 400: if Property is not a number rejects with "Bad Request"', () => {
+            const update = {
+                inc_voats: "1"
             }
             return request(app)
                 .patch('/api/reviews/3')
@@ -368,7 +410,7 @@ describe('API/REVIEWS', () => {
         });
     });
     describe('Post Comments By Review Id', () => {
-        test('status 200: should return an object', () => {
+        test('status 201: should return an object', () => {
             let updated = {
                 username: "bainesface",
                 body: "Something about things again"
@@ -376,12 +418,12 @@ describe('API/REVIEWS', () => {
             return request(app)
                 .post('/api/reviews/3/comments')
                 .send(updated)
-                .expect(200)
+                .expect(201)
                 .then(res => {
                     expect(typeof res.body.comment).toBe("object");
                 })
         });
-        test('status 200: should return the posted comment', () => {
+        test('status 201: should return the posted comment', () => {
             let updated = {
                 username: "bainesface",
                 body: "Something about things again"
@@ -389,14 +431,27 @@ describe('API/REVIEWS', () => {
             return request(app)
                 .post('/api/reviews/3/comments')
                 .send(updated)
-                .expect(200)
+                .expect(201)
                 .then(res => {
-                    expect(res.body.comment[0].body).toBe("Something about things again");
+                    expect(res.body.comment[0].body).toBe("Something about things again")
+                    expect(res.body.comment[0].author).toBe("bainesface");
                 })
         });
         test('status 400: should return "Bad Request" for invalid user id', () => {
             let updated = {
                 username: "bainesface2",
+                body: "Something about things"
+            }
+            return request(app)
+                .post('/api/reviews/3/comments')
+                .send(updated)
+                .expect(400)
+                .then(res => {
+                    expect(res.body.msg).toBe("Bad Request");
+                })
+        });
+        test('status 400: should return "Bad Request" when not given a username', () => {
+            let updated = {
                 body: "Something about things"
             }
             return request(app)
@@ -577,6 +632,22 @@ describe('API/COMMENTS', () => {
                     return request(app)
                         .get('/api/comments/3')
                         .expect(204)
+                })
+        })
+        test('status 400 when given an invlid ID', () => {
+            return request(app)
+                .delete('/api/comments/weafa')
+                .expect(400)
+                .then(res => {
+                    expect(res.body.msg).toBe("Bad Request");
+                })
+        })
+        test('status 404 when given a nonexistent id', () => {
+            return request(app)
+                .delete('/api/comments/1000')
+                .expect(404)
+                .then(res => {
+                    expect(res.body.msg).toBe("that ID was not found");
                 })
         })
     });
