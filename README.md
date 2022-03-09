@@ -33,3 +33,7 @@ tests may take upto 40 seconds to complete.
 ## Connecting to the Api
 
 you can connect to the API using thunder client / insomnia / postman using localhost:9090/api
+
+## Live Version
+
+[On Heroku](https://nc-project-1.herokuapp.com/api)
