@@ -84,7 +84,6 @@ const seed = (data) => {
       const comArray = commentData.map((com, index) => {
         return [com.body, com.votes, com.author, com.review_id, com.created_at]
       })
-      console.log(comArray[0])
       const comItems = format(`${insert} comments
       (body, votes, author, review_id, created_at)
       VALUES %L

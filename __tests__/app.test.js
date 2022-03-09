@@ -74,7 +74,7 @@ describe('API/REVIEWS', () => {
                     expect(typeof res.body.reviews).toBe("object")
                 })
         });
-        test.only("status 200: returns reviews ?sort_by=created_at in descending order by default", () => {
+        test("status 200: returns reviews ?sort_by=created_at in descending order by default", () => {
             return request(app)
                 .get("/api/reviews?sort_by=created_at")
                 .expect(200)
@@ -82,7 +82,7 @@ describe('API/REVIEWS', () => {
                     expect(res.body.reviews).toBeSortedBy('created_at', { descending: true })
                 });
         });
-        test.only("status 200: returns reviews in ?order=asc of date ascending ", () => {
+        test("status 200: returns reviews in ?order=asc of date ascending ", () => {
             return request(app)
                 .get("/api/reviews?order=ASC")
                 .expect(200)
