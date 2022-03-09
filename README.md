@@ -3,7 +3,7 @@
 ## Background
 
 During the north coders course we were tasked with building an API for the purpose of accessing application data programmatically. The intention here is to mimick the building of a real world backend service (such as reddit) which should provide this information to the front end architecture.
-The database is PSQL and we interact with it using [node-postgres](https://node-postgres.com/.
+The database is PSQL and we interact with it using [node-postgres](https://node-postgres.com/)
 
 Project time: 1 week
 
