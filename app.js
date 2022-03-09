@@ -6,7 +6,9 @@ app.use(express.json())
 app.use(cors())
 //routers
 const apiRouter = require('./routers/api.router');
+const { welcomeMessage } = require('./controllers/welcome.controller');
 
+app.use("/", welcomeMessage)
 app.use("/api", apiRouter)
 
 
